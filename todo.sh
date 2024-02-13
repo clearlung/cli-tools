@@ -11,7 +11,7 @@ else
 		-n)
 			read -p "Enter Task: "
 			echo "$REPLY" >> $list;;
-		-r) 
+		-rm) 
 			cat $list
 			read -p "Enter Task: "
 			sed -i "$(grep -n "$REPLY" $list | cut -d : -f 1)d" $list
