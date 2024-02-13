@@ -4,8 +4,7 @@ list=~/projects/todo/list.txt
 if [[ ${2} != '' ]]; then
 	case ${1} in
 		-n) echo ${2} >> $list;;
-		-r) sed -i "$(grep -n ${2} $list | cut -d : -f 1)d" $list; echo Cookies for you!;;
-		-fr) sed -i "$(grep -n ${2} $list | cut -d : -f 1)d" $list;;
+		-rm) sed -i "$(grep -n ${2} $list | cut -d : -f 1)d" $list; echo Cookies for you!;;
 	esac
 else
 	case ${1} in
@@ -17,10 +16,6 @@ else
 			read -p "Enter Task: "
 			sed -i "$(grep -n "$REPLY" $list | cut -d : -f 1)d" $list
 	       		echo Cookies for you!;;
-		-fr) 
-			cat $list
-			read -p "Enter Task: "
-			sed -i "$(grep -n "$REPLY" $list | cut -d : -f 1)d" $list;;
 		*) cat $list;;
 	esac
 fi
