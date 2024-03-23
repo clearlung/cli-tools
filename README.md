@@ -1,2 +1,2 @@
 # shell scripts
-scripts that I use
+retarded scripts that I don't use
