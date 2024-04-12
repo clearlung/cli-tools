@@ -1,2 +1,1 @@
-# shell scripts
-retarded scripts that I don't use
+attempts at making simple scripts
