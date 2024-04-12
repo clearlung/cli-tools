@@ -14,7 +14,7 @@ int main(int argc, char **argv) {
 				printf("remove\n");
 				break;
 			case 'n':
-				prin tf("new\n");
+				printf("new\n");
 				break;
 			default:
 				return 0;
