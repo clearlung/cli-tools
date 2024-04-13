@@ -50,8 +50,7 @@ void new(void) {
 void rm(void) {
     FILE *fptr1, *fptr2;
     int deleteLine, counter = 1;
-   	char ch = 'A';
-
+   	char ch;
     fptr1 = fopen("todo.txt", "r");	
     printf("line to delete: ");
     scanf("%d", &deleteLine);
