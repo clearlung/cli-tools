@@ -3,6 +3,7 @@
 #include <getopt.h>
 
 void list(void), new(void), rm(void);
+const char *path="/home/clear/projects/C/todo.txt";
 
 int main(int argc, char **argv) {
 	int optionVal = 0;
@@ -26,7 +27,7 @@ int main(int argc, char **argv) {
 
 void list(void) {
 	FILE *fptr;
-	fptr = fopen("todo.txt", "r");
+	fptr = fopen(path, "r");
 	char readFile;
 	if (fptr != NULL) {
 		char readFile[100];
@@ -39,7 +40,7 @@ void list(void) {
 
 void new(void) {
 	FILE *fptr;
-	fptr = fopen("todo.txt", "a");
+	fptr = fopen(path, "a");
 	char task[30];
 	printf("name of task: ");
 	fgets(task, sizeof(task), stdin);
@@ -48,24 +49,24 @@ void new(void) {
 }
 
 void rm(void) {
-    FILE *fptr1, *fptr2;
-    int deleteLine, counter = 1;
-   	char ch;
-    fptr1 = fopen("todo.txt", "r");	
-    printf("line to delete: ");
-    scanf("%d", &deleteLine);
-    fptr2 = fopen("todo.new", "w");
+	FILE *fptr1, *fptr2;
+	int deleteLine, counter = 1;
+	char ch;
+	fptr1 = fopen(path, "r");	
+	printf("line to delete: ");
+	scanf("%d", &deleteLine);
+	fptr2 = fopen("todo.new", "w");
 	while (ch != EOF) {
-    	ch = getc(fptr1);
-        if (counter != deleteLine) {
-            putc(ch, fptr2);
-        }
-        if (ch == '\n') {
-            counter++;
-        }      
-    }
-    fclose(fptr1);
-    fclose(fptr2);
-    remove("todo.txt");
-    rename("todo.new", "todo.txt");
+		ch = getc(fptr1);
+		if (counter != deleteLine) {
+			putc(ch, fptr2);
+		}
+		if (ch == '\n') {
+			counter++;
+		}      
+	}
+	fclose(fptr1);
+	fclose(fptr2);
+	remove(path);
+	rename("todo.new", path);
 }
