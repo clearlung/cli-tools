@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <getopt.h>
 
-void list(void), new(void), rm(void);
 const char *path="/home/clear/projects/todo.txt";
 
 int main(int argc, char **argv) {
