@@ -1,6 +1,7 @@
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_image.h"
 #include <stdio.h>
+#include <time.h>
 
 typedef struct {
   int x, y;
@@ -12,19 +13,30 @@ typedef struct {
 
 typedef struct {
   Player player;
+  Star stars[100];
   SDL_Texture *star;
   SDL_Renderer *renderer;
 } GameState;
 
 void loadGame(GameState *game) {
-/*  for(int i = 0; i < 5; i++) {
-    game->cats[i].x = i*64;
-    game->cats[i].y = i*64;
+  SDL_Surface *starSurface = NULL;
+  starSurface = IMG_Load("star.png");
+  if(starSurface == NULL) {
+    printf("Image not on disk\n");
+    SDL_Quit();
+    exit(1);
   }
-  */
+
+  game->star = SDL_CreateTextureFromSurface(game->renderer, starSurface);
+  SDL_FreeSurface(starSurface);
   game->player.x = 320;
   game->player.y = 240;
- }
+  
+  for(int i=0; i<100; i++) {
+    game->stars[i].x = random()%640;
+    game->stars[i].y = random()%480;
+  }
+}
 
 int processEvents(SDL_Window *window, GameState *game) {
   SDL_Event event;
@@ -50,18 +62,17 @@ int processEvents(SDL_Window *window, GameState *game) {
   }
   const Uint8 *state = SDL_GetKeyboardState(NULL);
   if(state[SDL_SCANCODE_UP]) {
-    game->player.y--;
+    game->player.y -= 5;
   }
   if(state[SDL_SCANCODE_DOWN]) {
-    game->player.y++;
+    game->player.y += 5;
   }
   if(state[SDL_SCANCODE_LEFT]) {
-    game->player.x--;
+    game->player.x -= 5;
   }
   if(state[SDL_SCANCODE_RIGHT]) {
-    game->player.x++;
-  }
- 
+    game->player.x += 5;
+  } 
   return done;
 }
 
@@ -72,22 +83,19 @@ void doRender(SDL_Renderer *renderer, GameState *game) {
   
   SDL_Rect rect = { game->player.x, game->player.y, 200, 200 };
   SDL_RenderFillRect(renderer, &rect);
-/*  for(int i = 0; i <100; i++) {
-    SDL_Rect catRect = { game->cats[i].x, game->cats[i].y, 64, 64 };
-    SDL_RenderCopy(renderer, game->cat, NULL, &catRect);
-    } */
-  SDL_Rect starRect = { 50, 50, 64, 64 };
-  SDL_RenderCopy(renderer, game->star, NULL, &starRect);
+  for (int i=0; i<100; i++) {
+    SDL_Rect starRect = { game->stars[i].x, game->stars[i].y, 64, 64 };
+    SDL_RenderCopy(renderer, game->star, NULL, &starRect);
+  }
   SDL_RenderPresent(renderer);
 }
  
-
 int main(int argc, char *argv[]) {
   GameState gameState;
   SDL_Window *window = NULL;
   SDL_Renderer *renderer = NULL;
-  SDL_Surface *starSurface = NULL;
   SDL_Init(SDL_INIT_VIDEO);
+  srandom((int)time(NULL));
   window = SDL_CreateWindow("Game Window",
       SDL_WINDOWPOS_UNDEFINED,
       SDL_WINDOWPOS_UNDEFINED,
@@ -96,17 +104,6 @@ int main(int argc, char *argv[]) {
       0
       );
   renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-
-  starSurface = IMG_Load("star.png");
-  if(starSurface == NULL) {
-    printf("Image not on disk\n");
-    SDL_Quit();
-    return 1;
-  }
-
-  gameState.star = SDL_CreateTextureFromSurface(renderer, starSurface);
-  SDL_FreeSurface(starSurface);
-
   gameState.renderer = renderer;
 
   loadGame(&gameState);
@@ -114,7 +111,6 @@ int main(int argc, char *argv[]) {
   while(!done) {
     done = processEvents(window, &gameState);
     doRender(renderer, &gameState);
-    //SDL_Delay(10);
   }
   SDL_DestroyTexture(gameState.star);
   SDL_DestroyWindow(window);
