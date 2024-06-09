@@ -9,33 +9,71 @@ typedef struct {
 
 typedef struct {
   int x, y;
-} Star;
+} Balloon;
+
+typedef struct {
+  int x, y, w, h;
+} Tile;
 
 typedef struct {
   Player player;
-  Star stars[100];
-  SDL_Texture *star;
+  Balloon balloons[100];
+  Tile tiles[100];
+  SDL_Texture *balloon;
+  SDL_Texture *playerFrames[1];
+  SDL_Texture *brick;
   SDL_Renderer *renderer;
 } GameState;
 
 void loadGame(GameState *game) {
-  SDL_Surface *starSurface = NULL;
-  starSurface = IMG_Load("star.png");
-  if(starSurface == NULL) {
+  SDL_Surface *surface = NULL;
+  surface = IMG_Load("assets/balloon.png");
+  if(surface == NULL) {
     printf("Image not on disk\n");
     SDL_Quit();
     exit(1);
   }
+  
+  game->balloon = SDL_CreateTextureFromSurface(game->renderer, surface);
+  SDL_FreeSurface(surface);  
 
-  game->star = SDL_CreateTextureFromSurface(game->renderer, starSurface);
-  SDL_FreeSurface(starSurface);
+  surface = IMG_Load("assets/player_idle.png");
+  if(surface == NULL) {
+    printf("Image not on disk\n");
+    SDL_Quit();
+    exit(1);
+  }
+  game->playerFrames[0] = SDL_CreateTextureFromSurface(game->renderer, surface);
+  SDL_FreeSurface(surface);
+
+  surface = IMG_Load("assets/player_walk.png");
+  if(surface == NULL) {
+    printf("Image not on disk\n");
+    SDL_Quit();
+    exit(1);
+  }
+  game->playerFrames[1] = SDL_CreateTextureFromSurface(game->renderer, surface);
+  SDL_FreeSurface(surface);
+  
+  surface = IMG_Load("assets/tile.png");
+  game->brick = SDL_CreateTextureFromSurface(game->renderer, surface);
+
   game->player.x = 320;
   game->player.y = 240;
-  
+
   for(int i=0; i<100; i++) {
-    game->stars[i].x = random()%640;
-    game->stars[i].y = random()%480;
+    game->balloons[i].x = random()%640;
+    game->balloons[i].y = random()%480;
   }
+
+  for(int i = 0; i < 100; i++) {
+    game->tiles[i].w = 64;
+    game->tiles[i].h = 64;
+    game->tiles[i].x = i*64;
+    game->tiles[i].y = 400;
+  }
+  game->tiles[99].x = 350;
+  game->tiles[99].y = 200;
 }
 
 int processEvents(SDL_Window *window, GameState *game) {
@@ -81,12 +119,16 @@ void doRender(SDL_Renderer *renderer, GameState *game) {
   SDL_RenderClear(renderer);
   SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
   
-  SDL_Rect rect = { game->player.x, game->player.y, 200, 200 };
-  SDL_RenderFillRect(renderer, &rect);
-  for (int i=0; i<100; i++) {
-    SDL_Rect starRect = { game->stars[i].x, game->stars[i].y, 64, 64 };
-    SDL_RenderCopy(renderer, game->star, NULL, &starRect);
+  SDL_Rect rect = { game->player.x, game->player.y, 48, 48 };
+  SDL_RenderCopyEx(renderer, game->playerFrames[0], NULL, &rect, 0, NULL, 0);
+  for(int i=0;i<100;i++) {
+    SDL_Rect tileRect = { game->tiles[i].x, game->tiles[i].y, game->tiles[i].w, game->tiles[i].h };
+    SDL_RenderCopy(renderer, game->brick, NULL, &tileRect);
   }
+    /*  for (int i=0; i<100; i++) {
+    SDL_Rect balloonRect = { game->balloons[i].x, game->balloons[i].y, 64, 64 };
+    SDL_RenderCopy(renderer, game->balloon, NULL, &balloonRect);
+  }*/
   SDL_RenderPresent(renderer);
 }
  
@@ -112,7 +154,7 @@ int main(int argc, char *argv[]) {
     done = processEvents(window, &gameState);
     doRender(renderer, &gameState);
   }
-  SDL_DestroyTexture(gameState.star);
+  SDL_DestroyTexture(gameState.balloon);
   SDL_DestroyWindow(window);
   SDL_DestroyRenderer(renderer);
   SDL_Quit();
