@@ -4,7 +4,7 @@
 #include <time.h>
 
 typedef struct {
-  int x, y;
+  float x, y, dy;
 } Player;
 
 typedef struct {
@@ -60,7 +60,7 @@ void loadGame(GameState *game) {
 
   game->player.x = 320;
   game->player.y = 240;
-
+  game->player.dy = 0;
   for(int i=0; i<100; i++) {
     game->balloons[i].x = random()%640;
     game->balloons[i].y = random()%480;
@@ -74,6 +74,38 @@ void loadGame(GameState *game) {
   }
   game->tiles[99].x = 350;
   game->tiles[99].y = 200;
+}
+
+void process(GameState *game) {
+  Player *player = &game->player;
+  player->y += player->dy;
+}
+
+
+void collisionDetect(GameState *game) {
+  for(int i=0;i<100;i++) {
+    float mw = 48, mh = 48;
+    float mx = game->player.x, my = game->player.y;
+    float bx = game->tiles[i].x, by = game->tiles[i].y, bw = game->tiles[i].w, bh = game->tiles[i].h;
+    if(my+mh > by && my < by+bh) {
+      if(mx < bx+bw && mx+mw > bx+bw) {
+        game->player.x = bx + bw;
+        mx = bx + bw;
+      } else if(mx+mw > bx && mx < bx) {
+        game->player.x = bx - mw;
+        mx = bx-bw;
+      }
+    }
+    if(mx+mw > bx && mx<bx+bw) {
+      if(my < by+bh && my > by) {
+        game->player.y = by+bh;
+        game->player.dy = 0;
+      } else if(my+mh > by && my < by) {
+        game->player.y = by-mh;
+        game->player.dy = 0;
+      }
+    }
+  }
 }
 
 int processEvents(SDL_Window *window, GameState *game) {
@@ -152,6 +184,8 @@ int main(int argc, char *argv[]) {
   int done = 0;
   while(!done) {
     done = processEvents(window, &gameState);
+    process(&gameState);
+    collisionDetect(&gameState);
     doRender(renderer, &gameState);
   }
   SDL_DestroyTexture(gameState.balloon);
