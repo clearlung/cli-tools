@@ -2,9 +2,11 @@
 #include "SDL2/SDL_image.h"
 #include <stdio.h>
 #include <time.h>
+#define GRAVITY 0.24f
 
 typedef struct {
-  float x, y, dy;
+  float x, y, dx, dy;
+  int onLedge;
 } Player;
 
 typedef struct {
@@ -61,10 +63,12 @@ void loadGame(GameState *game) {
   game->player.x = 320;
   game->player.y = 240;
   game->player.dy = 0;
-  for(int i=0; i<100; i++) {
+  game->player.dx = 0;
+  game->player.onLedge = 0;
+/*  for(int i=0; i<100; i++) {
     game->balloons[i].x = random()%640;
     game->balloons[i].y = random()%480;
-  }
+  }*/
 
   for(int i = 0; i < 100; i++) {
     game->tiles[i].w = 64;
@@ -74,35 +78,45 @@ void loadGame(GameState *game) {
   }
   game->tiles[99].x = 350;
   game->tiles[99].y = 200;
-}
+} 
 
 void process(GameState *game) {
   Player *player = &game->player;
+  player->x += player->dx;
   player->y += player->dy;
+  player->dy += GRAVITY;
 }
-
 
 void collisionDetect(GameState *game) {
   for(int i=0;i<100;i++) {
     float mw = 48, mh = 48;
     float mx = game->player.x, my = game->player.y;
     float bx = game->tiles[i].x, by = game->tiles[i].y, bw = game->tiles[i].w, bh = game->tiles[i].h;
-    if(my+mh > by && my < by+bh) {
-      if(mx < bx+bw && mx+mw > bx+bw) {
-        game->player.x = bx + bw;
-        mx = bx + bw;
-      } else if(mx+mw > bx && mx < bx) {
-        game->player.x = bx - mw;
-        mx = bx-bw;
+    if(mx+mw/2 > bx && mx+mw/2 < bx+bw) {
+      if(my < by+bh && my > by && game->player.dy < 0) {
+        game->player.y = by+bh;
+        my = by+bh;
+        game->player.dy = 0;
+      } 
+    } 
+    if(mx+mw > bx && mx < bx + bw) {
+      if(my+mh > by && my < by && game->player.dy > 0) {
+        game->player.y = by-mh;
+        my = by-mh;
+        game->player.dy = 0;
+        game->player.onLedge = 1;
       }
     }
-    if(mx+mw > bx && mx<bx+bw) {
-      if(my < by+bh && my > by) {
-        game->player.y = by+bh;
-        game->player.dy = 0;
-      } else if(my+mh > by && my < by) {
-        game->player.y = by-mh;
-        game->player.dy = 0;
+    if(my+mh > by && my < by+bh) {
+      if(mx < bx+bw && mx+mw > bx+bw && game->player.dx < 0) {
+        game->player.x = bx + bw;
+        mx = bx + bw;
+        game->player.dx = 0;
+      }
+      else if(mx+mw > bx && mx < bx && game->player.dx > 0) {
+        game->player.x = bx - mw;
+        mx = bx - mw;
+        game->player.dx = 0;
       }
     }
   }
@@ -124,6 +138,11 @@ int processEvents(SDL_Window *window, GameState *game) {
           case SDLK_ESCAPE:
             done = 1;
           break;
+          case SDLK_UP:
+            if(game->player.onLedge) {
+              game->player.dy = -8;
+              game->player.onLedge = 0;
+            } break;
         } break;
       case SDL_QUIT:
         done = 1;
@@ -131,18 +150,24 @@ int processEvents(SDL_Window *window, GameState *game) {
     }
   }
   const Uint8 *state = SDL_GetKeyboardState(NULL);
-  if(state[SDL_SCANCODE_UP]) {
-    game->player.y -= 5;
-  }
-  if(state[SDL_SCANCODE_DOWN]) {
-    game->player.y += 5;
-  }
   if(state[SDL_SCANCODE_LEFT]) {
-    game->player.x -= 5;
+    game->player.dx -= 0.5;
+    if(game->player.dx < -6) {
+      game->player.dx = -6;
+    }
   }
-  if(state[SDL_SCANCODE_RIGHT]) {
-    game->player.x += 5;
-  } 
+  else if(state[SDL_SCANCODE_RIGHT]) {
+    game->player.dx += 0.5;
+    if(game->player.dx > 6) {
+      game->player.dx = 6;
+    }
+  }
+  else {
+    game->player.dx *= 0.8f;
+    if(fabsf(game->player.dx) < 0.1f) {
+      game->player.dx = 0;
+    }
+  }
   return done;
 }
 
@@ -157,10 +182,6 @@ void doRender(SDL_Renderer *renderer, GameState *game) {
     SDL_Rect tileRect = { game->tiles[i].x, game->tiles[i].y, game->tiles[i].w, game->tiles[i].h };
     SDL_RenderCopy(renderer, game->brick, NULL, &tileRect);
   }
-    /*  for (int i=0; i<100; i++) {
-    SDL_Rect balloonRect = { game->balloons[i].x, game->balloons[i].y, 64, 64 };
-    SDL_RenderCopy(renderer, game->balloon, NULL, &balloonRect);
-  }*/
   SDL_RenderPresent(renderer);
 }
  
