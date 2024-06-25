@@ -1,1 +1,1 @@
-attempts at making simple scripts
+random wip programs
