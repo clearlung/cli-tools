@@ -1,17 +1,28 @@
 #include "SDL2/SDL.h"
 #include <stdio.h>
+#include <time.h> 
 
 typedef struct {
-  float y;
+  int x, y;
+  int dir;
 } Player;
 
 typedef struct {
+  int x, y;
+} Apple;
+
+typedef struct {
   Player player;
+  Apple apple;
   SDL_Renderer *renderer;
 } GameState;
 
 void loadGame(GameState *game) {  
+  game->player.x = 320;
   game->player.y = 240;
+  game->player.dir = 5;
+  game->apple.x = random()%640;
+  game->apple.y = random()%480;
 } 
 
 int processEvents(SDL_Window *window, GameState *game) {
@@ -27,8 +38,17 @@ int processEvents(SDL_Window *window, GameState *game) {
         } break;
       case SDL_KEYDOWN:
         switch(event.key.keysym.sym) {
-          case SDLK_ESCAPE:
-            done = 1;
+          case SDLK_UP:
+            game->player.dir = 0;
+          break;
+          case SDLK_DOWN:
+            game->player.dir = 1;
+          break;
+          case SDLK_LEFT:
+            game->player.dir = 2;
+          break;
+          case SDLK_RIGHT:
+            game->player.dir = 3;
           break;
         } break;
       case SDL_QUIT:
@@ -36,33 +56,50 @@ int processEvents(SDL_Window *window, GameState *game) {
       break;
     }
   }
-  const Uint8 *state = SDL_GetKeyboardState(NULL);
-  if(state[SDL_SCANCODE_UP]) {
-    game->player.y -= 5;
-  }
-  else if(state[SDL_SCANCODE_DOWN]) {
-    game->player.y += 5;
-  }
   return done;
 }
 
 void doRender(SDL_Renderer *renderer, GameState *game) {
   SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
   SDL_RenderClear(renderer);
-  SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-  
-  SDL_Rect playerPaddle = { 20, game->player.y, 4, 48 };
-  SDL_RenderFillRect(renderer, &playerPaddle);
-  SDL_Rect CPUPaddle = { 620, game->player.y, 4, 48 };
-  SDL_RenderFillRect(renderer, &CPUPaddle);
+  SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+  SDL_Rect snake = { game->player.x, game->player.y, 4, 4 };
+  SDL_RenderFillRect(renderer, &snake);
+  SDL_Rect fruit = { game->apple.x, game->apple.y, 4, 4};
+  SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+  SDL_RenderFillRect(renderer, &fruit);
   SDL_RenderPresent(renderer);
 }
- 
+
+void movement(GameState *game) {
+  printf("%i", game->player.dir);
+  if (game->player.dir == 0)
+    game->player.y -= 1;
+  else if (game->player.dir == 1)
+    game->player.y += 1;
+  else if (game->player.dir == 2)
+    game->player.x -= 1;
+  else if (game->player.dir == 3)
+    game->player.x += 1;
+}
+
+void gameOver(GameState *game) {
+  game->player.dir = 5;
+  game->player.x = 320;
+  game->player.y = 240;
+}
+
+void collision(GameState *game) {
+  if (game->player.x < 0 || game->player.x > 640 || game->player.y < 0 || game->player.y > 480)
+    gameOver(game);
+}
+
 int main(int argc, char *argv[]) {
   GameState gameState;
   SDL_Window *window = NULL;
   SDL_Renderer *renderer = NULL;
   SDL_Init(SDL_INIT_VIDEO);
+  srandom((int)time(NULL));
   window = SDL_CreateWindow("Game Window",
       SDL_WINDOWPOS_UNDEFINED,
       SDL_WINDOWPOS_UNDEFINED,
@@ -77,6 +114,8 @@ int main(int argc, char *argv[]) {
   int done = 0;
   while(!done) {
     done = processEvents(window, &gameState);
+    collision(&gameState);
+    movement(&gameState);
     doRender(renderer, &gameState);
   }
   SDL_DestroyWindow(window);
