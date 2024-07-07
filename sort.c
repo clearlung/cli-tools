@@ -14,12 +14,31 @@ void shellsort(int v[], int n) {
   }
 }
 
+void shuffle(int *array, int n) {
+  if (n > 1) {
+    int i;
+    for(i=0; i < n-1; i++) {
+      int j = i + rand() / (RAND_MAX / (n-i) + 1);
+      int t = array[j];
+      array[j] = array[i];
+      array[i] = t;
+    }
+  }
+}
+
 int main(void) {
-  int myArray[5] = {5, 3, 2, 1, 4};
+  int myArray[5] = {1, 2, 3, 4, 5};
   int arrayElements = 5;
-  printf("unsorted\n");
+
+  printf("sorted\n");
   for(int i=0;i<5;i++)
     printf("%d", myArray[i]);
+
+  printf("\nscrambled\n");
+  shuffle(myArray, arrayElements);
+  for(int i=0;i<5;i++)
+    printf("%d", myArray[i]);
+
   printf("\nsorted\n");
   shellsort(myArray, arrayElements);
   for(int i=0;i<5;i++)
