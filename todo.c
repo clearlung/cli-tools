@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <getopt.h>
+#include <string.h>
 
 const char *path="/home/clear/todo/todo.txt";
 
@@ -41,8 +42,9 @@ int indexLine(int sentenceLength, int searchTermLength, char *searchTerm, char *
       while(sentence[i] == searchTerm[i - offset] && sentence[i] != '\0') {
         i++;
       }
-      if(i-offset == searchTermLength - 1)
+      if(i-offset == searchTermLength - 1) {
         return lineNumber;
+      }
     }
   }
   return -1;
@@ -68,31 +70,22 @@ void deleteLine(FILE *fptr, FILE *fptr2, int lineNumber) { //deletes line from f
   rename("todo.new", path);
 }
 
-
-void read(FILE *fptr) {
+void read(FILE *fptr, int fileLength) {
 	fptr = fopen(path, "r");
   char readFile;
   if (fptr != NULL) {
-    char readFile[100];
-    while(fgets(readFile, 100, fptr)) {
+    char readFile[fileLength];
+    while(fgets(readFile, fileLength, fptr)) {
       printf("%s", readFile);
     }
   }
   fclose(fptr);
 }
 
-void appendLine(FILE *fptr, int argc, char **argv) {
+void appendLine(FILE *fptr, char *task) {
   fptr = fopen(path, "a");
-  if(argc == 3) {
-    fprintf(fptr, "%s\n", argv[2]);
-    fclose(fptr);
-  } else if(argc == 2) {
-    char task[30];
-    printf("name of task: ");
-    fgets(task, sizeof(task), stdin);
-    fprintf(fptr, "%s\n", task);
-    fclose(fptr);
-  }
+  fprintf(fptr, "%s\n", task);
+  fclose(fptr);
 }
 
 int main(int argc, char **argv) {
@@ -100,23 +93,38 @@ int main(int argc, char **argv) {
   int optionVal = 0;
   int lineNumber;
   int max = characterCount(fptr);
-  char sentence[max];
+  char fileContents[max];    
+  int searchTermLength;
 
   while(optionVal = getopt(argc, argv, "rn")) {
   	switch(optionVal) {
   		case 'r':
-        int searchTermLength;
-        int sentenceLength = characterCount(fptr);
-        copy(fptr, sentence, max);
-        searchTermLength = sizeof(argv[2]) / sizeof(argv[2][0]); 
-        int lineNumber = indexLine(sentenceLength, searchTermLength, argv[2], sentence);
+        copy(fptr, fileContents, max);
+        if(argc == 3) {
+          searchTermLength = strlen(argv[2]) + 1; 
+          lineNumber = indexLine(max, searchTermLength, argv[2], fileContents);
+        }
+        else {
+          char task[30];
+          printf("name of task: ");
+          scanf("%s", task);
+          searchTermLength = strlen(task) + 1;
+          lineNumber = indexLine(max, searchTermLength, task, fileContents); 
+        }
         deleteLine(fptr, fptr2, lineNumber);
   	    break;
   	  case 'n':
-        appendLine(fptr, argc, argv);
+        if(argc == 3)
+          appendLine(fptr, argv[2]);
+        else {
+          char task[30];
+          printf("name of task: ");
+          fgets(task, sizeof(task), stdin);
+          appendLine(fptr, task);
+        }
         break;
   	  default:
-        read(fptr);
+        read(fptr, max);
   			return 0;
   	}
   }
