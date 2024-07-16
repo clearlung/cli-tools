@@ -1,4 +1,4 @@
-//program instructions: replace all occurences of tab characters in a file with 2 spaces
+//program instructions: replace first occurence of searchTerm with replaceTerm
 #include <stdio.h>
 #include <stdbool.h>
 
