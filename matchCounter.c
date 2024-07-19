@@ -1,12 +1,13 @@
-//program instructions: copy a given line to an array
+//program instructions: copy file contents to a multidimensional array
 
 #include <stdio.h>
+#include <stdlib.h>
 #define maxLength 100
 
 const char *path="/home/clear/C/replace/poem.txt";
 
 int returnLines() { // return number of lines
-  FILE *fptr;
+  FILE *fptr = NULL;
   fptr = fopen(path, "r");
   char c;
   int i = 0;
@@ -20,15 +21,16 @@ int returnLines() { // return number of lines
 }
 
 int returnLineLength(int line) { // return characters in line
-  FILE *fptr;
+  FILE *fptr = NULL;
   fptr = fopen(path, "r");
-  char c;
-  int lineCounter = 1;
-  int i=0;
-  
   if (fptr == NULL) {
     printf("fail\n");
+    exit(1);
   }
+
+  char c;
+  int lineCounter = 0;
+  int i=0; 
 
   while ((c = getc(fptr)) != EOF) {
     if (lineCounter <= line && c == '\n') {
@@ -37,55 +39,56 @@ int returnLineLength(int line) { // return characters in line
     else if (lineCounter == line) {
       i++;
     }
-    else {
-      fclose(fptr);
-      return i;
-    }
-  }
-  fclose(fptr);
-  return -1;
-}
-
-void lineToArray(int line) { // copy line to array
-  FILE *fptr;
-  fptr = fopen(path, "r");
-
-  int maxLines = returnLines(fptr);
-  char c;
-  char copy[maxLines][maxLength];
-  int currentLine = 1;
-  int currentChar = 0;
-  int lineLength = returnLineLength(currentLine);
-
-  if (fptr == NULL) {
-    printf("fail");
-    return;
-  }
-  
-  while ((c = getc(fptr)) != EOF) {
-    if (c == '\n') {
-      currentLine++;
-      currentChar = 0;
-    }
-    else if (currentLine == line) { 
-      if (currentChar <= lineLength + 1) {
-        copy[currentLine][currentChar] = c;
-        currentChar++;
-      }
-    }
-    else if (currentLine > line) {
+    else if (lineCounter > line) {
       break;
     }
   }
   fclose(fptr);
+  return i;
+}
+
+void lineToArray(void) { // copy line to array
+  FILE *fptr;
+  fptr = fopen(path, "r");
+  if (fptr == NULL) {
+    printf("fail");
+    exit(1);
+  }
+
+  int maxLines = returnLines(fptr);
+  char copy[maxLines][maxLength];
+  char c;
+  int currentLine = 0;
+  int currentChar = 0;
+  int lineLength = returnLineLength(currentLine);
+
+  while ((c = getc(fptr)) != EOF) {
+    if (c == '\n') {
+      copy[currentLine][currentChar] = '\0';
+      currentLine++;
+      currentChar = 0;
+      if (currentLine < maxLines) {
+        lineLength = returnLineLength(currentLine);
+      }
+    }
+    if (currentChar <= lineLength) {
+      copy[currentLine][currentChar] = c;
+      currentChar++;
+    }
+  }
+  fclose(fptr);
+  copy[currentLine][currentChar] = '\0';
+  for (int i = 0; i < maxLines; i++) {
+    printf("%s", copy[i]);
+  }
 }
 
 int main(void) {
-  lineToArray(3); 
+  lineToArray();
   return 0;
 }
 
-//task 2 copy file contents to a multidimensional array
+//task 3: return the value of lineToArray to main;
 
 /*const char *path2="/home/clear/C/replace/poem.txt.bak";
 
