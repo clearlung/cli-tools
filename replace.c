@@ -1,42 +1,36 @@
-//program instructions: replace first occurence of searchTerm with replaceTerm
+//program instructions: replace occurences of searchTerm with replaceTerm
+//todo: make program read input through getchar insted of getc. also remove instances of the charactercount function because it's useless.
 #include <stdio.h>
 #include <stdbool.h>
+#include <stdio.h>
+#define IN 1
+#define OUT 0
 
-const char *path="/home/clear/replace/poem.txt";
-const char *path2="/home/clear/replace/poem.txt.bak";
+char * copy(char *array, char *text);
+int find(char *text, char *search, int max);
+void replace(char *text, char *search, char *replace, int max);
 
-char searchTerm[] = "Blueberries";
-char replaceTerm[] = "pineapple";
+int main(void) {
+  char searchTerm[] = "berry";
+  char replaceTerm[] = "pineapple"; 
+  int searchTermLength = sizeof(searchTerm) / sizeof(searchTerm[0]);
+  int replaceTermLength = sizeof(replaceTerm) / sizeof(replaceTerm[0]);
+  char fileContents[1000];
 
-int searchTermLength = sizeof(searchTerm) / sizeof(searchTerm[0]);
-int replaceTermLength = sizeof(replaceTerm) / sizeof(replaceTerm[0]);
-
-int characterCount(FILE *fptr) { //returns number of characters in file 
-  fptr = fopen(path, "r");
-  if (fptr != NULL) {
-    char c;
-    int counter = 0;
-
-    for(c=getc(fptr); c != EOF; c=getc(fptr)) {
-      counter += 1;
-    }
-    fclose(fptr);
-    return counter;
-  }
-  return -1;
+  copy(fptr, fileContents, max);
+  replace(fileContents, searchTerm, replaceTerm, max);
 }
 
-char * copy(FILE *fptr, char *text, int max) { //copy file content to array
-  fptr = fopen(path, "r");
-  char c;
 
-  if(fptr != NULL) {
-    for(int i=0;i<max;i++) {
-      c = getc(fptr); 
-      text[i] = c;
-    }
+char * copy(char *array, int max) {
+  int i, c;  
+  i = 0;
+
+  while((c = getchar) != EOF && i<max;) {
+    c = getc(fptr); 
+    array[i++] = c;    
   }
-  fclose(fptr);
+
   return text;
 }
 
@@ -57,11 +51,10 @@ int find(char *text, char *search, int max) {
   return -1;
 }
 
-void replace(char *text, char *search, char *replace, int max) {
+void replace(char *array, char *search, char *replace) {
   int offset = find(text, search, max);
-  int i, j, k;
-  FILE *fptr2;
-  fptr2 = fopen(path2, "w");
+  int i, j, k; // replace this method using state = IN/OUT for better functionality
+  int state;
 
   if (offset != -1) {
     for (i=0; i<offset; i++) {
@@ -72,7 +65,7 @@ void replace(char *text, char *search, char *replace, int max) {
       if (replace[j] != '\0')
         putc(replace[j], fptr2);
     }
-    for (k = offset + searchTermLength - 1; k < max; k++) {
+    for (k = offset + searchTermLength - 1; text[k] != '\0'; k++) {
       if(text[k] != '\0')
         putc(text[k], fptr2);
     }
@@ -81,10 +74,15 @@ void replace(char *text, char *search, char *replace, int max) {
   }
 }
 
-int main(void) {
-  FILE *fptr;
-  int max = characterCount(fptr);
-  char fileContents[max];
-  copy(fptr, fileContents, max);
-  replace(fileContents, searchTerm, replaceTerm, max);
+/* useless function
+int characterCount(char *array) { 
+  int c, counter;
+  counter = 0;
+
+  while((c=getc(fptr)) c != EOF) {
+    counter += 1;
+  }
+
+  return counter;
 }
+*/
