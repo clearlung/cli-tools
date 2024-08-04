@@ -7,10 +7,11 @@
 const char *path="/home/clear/programming/cli.tools/todo.txt";
 
 void copy(FILE *fptr, char *array);
-int indexLine(int searchTermLength, char *searchTerm, char *array);
+int indexLine(char *searchTerm, int searchTermLength, char *array);
 void deleteLine(FILE *fptr1, int lineNumber);
 void read(FILE *fptr);
-void appendLine(FILE *fptr, char *taask);
+void appendLine(FILE *fptr, char *task, int mode);
+void returnTask(char *array);
 
 int main(int argc, char **argv) {
   FILE *fptr;
@@ -19,33 +20,32 @@ int main(int argc, char **argv) {
   char fileContents[MAX];    
   int searchTermLength;
 
-  while(optionVal = getopt(argc, argv, "ra")) {
+  while (optionVal = getopt(argc, argv, "ar")) {
   	switch(optionVal) {
   	  case 'r':
         copy(fptr, fileContents);
-        if(argc == 3) {
+        if (argc == 3) {
           searchTermLength = strlen(argv[2]) + 1; 
-          lineNumber = indexLine(searchTermLength, argv[2], fileContents);
+          lineNumber = indexLine(argv[2], searchTermLength, fileContents);
         }
         else {
           char task[30];
           printf("name of task: ");
           scanf("%s", task);
           searchTermLength = strlen(task) + 1;
-          lineNumber = indexLine(searchTermLength, task, fileContents); 
+          lineNumber = indexLine(task, searchTermLength, fileContents); 
         }
-        printf("test");
         deleteLine(fptr, lineNumber);
   	    break;
   	  case 'a':
         if(argc == 3) {
-          appendLine(fptr, argv[2]);
+          appendLine(fptr, argv[2], 1);
         }
         else {
-          char task[30];
+          char task[MAX];
           printf("name of task: ");
-          fgets(task, sizeof(task), stdin); //fgets includes the '\n' so I should make my own function to replace it.
-          appendLine(fptr, task);
+          returnTask(task);
+          appendLine(fptr, task, 2);
         }
         break;
   	  default:
@@ -56,27 +56,36 @@ int main(int argc, char **argv) {
   return 0;
 }
 
+void returnTask(char *array) {
+  int i, c;
+  i=0;
+
+  while ((c = getchar()) != EOF) {
+    if (c != '\n') {
+      array[i++] = c;
+    }
+    else if (c == '\n') {
+      array[i] = '\0';
+      break;
+    }
+  }
+}
+
 void copy(FILE *fptr, char *array) { //copy file content to array
-  fptr = fopen(path, "r+");
+  fptr = fopen(path, "r");
   int i, c;
 
-  if (fptr == NULL) {
-    printf("File does not exist.\n");
-    return;
-  }
-
   i=0;
-  while ((c = getc(fptr)) != EOF) { // this loop dosen't end for some reason? never had a problem with this before.
-    printf("char c: %c\n", c);
-    array[i++] = c; //this line is what's broken. I don't see anything wrong with this though. 
+  while ((c = fgetc(fptr)) != EOF) {
+    array[i++] = c;
   }
   array[i] = '\0';
-  printf("test");
+  
   fclose(fptr);
 }
 
 
-int indexLine(int searchTermLength, char *searchTerm, char *array) { //returns lineNumber of string
+int indexLine(char *searchTerm, int searchTermLength, char *array) { //returns lineNumber of string
   int offset, lineNumber, i;
   i = 0; lineNumber = 1;
 
@@ -92,6 +101,7 @@ int indexLine(int searchTermLength, char *searchTerm, char *array) { //returns l
         return lineNumber;
       }
     }
+    i++;
   }
   return -1;
 }
@@ -108,7 +118,6 @@ void deleteLine(FILE *fptr1, int lineNumber) { //deletes line from file
   }
 
   while ((c = getc(fptr1)) != EOF) {
-    putchar(c);
     if (counter != lineNumber) {
       putc(c, fptr2);
     }
@@ -139,8 +148,21 @@ void read(FILE *fptr) {
   fclose(fptr);
 }
 
-void appendLine(FILE *fptr, char *task) {
+void appendLine(FILE *fptr, char *task, int mode) {
+  char newLine = '\n';
   fptr = fopen(path, "a");
-  fprintf(fptr, "%s\n", task);  
+  switch (mode) {
+    case 1:
+      fprintf(fptr, "%s", task);  
+      break;
+    case 2:
+      for (int i=0; task[i] != '\0'; i++)
+        putc(task[i], fptr);        
+      break;
+    default:
+      fclose(fptr);
+      return;
+  }
+  putc(newLine, fptr);
   fclose(fptr);
 }
