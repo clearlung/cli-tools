@@ -2,47 +2,93 @@
 #include <stdlib.h>
 #include <getopt.h>
 #include <string.h>
+#define MAX 1000
 
-const char *path="/home/clear/todo/todo.txt";
+const char *path="/home/clear/programming/cli.tools/todo.txt";
 
-int characterCount(FILE *fptr) { //returns number of characters in file
-  fptr = fopen(path, "r");
-  char c;
-  int counter = 0;
+void copy(FILE *fptr, char *array);
+int indexLine(int searchTermLength, char *searchTerm, char *array);
+void deleteLine(FILE *fptr1, int lineNumber);
+void read(FILE *fptr);
+void appendLine(FILE *fptr, char *taask);
 
-  for(c=getc(fptr); c != EOF; c=getc(fptr)) {
-    counter += 1;
+int main(int argc, char **argv) {
+  FILE *fptr;
+  int optionVal = 0;
+  int lineNumber;
+  char fileContents[MAX];    
+  int searchTermLength;
+
+  while(optionVal = getopt(argc, argv, "ra")) {
+  	switch(optionVal) {
+  	  case 'r':
+        copy(fptr, fileContents);
+        if(argc == 3) {
+          searchTermLength = strlen(argv[2]) + 1; 
+          lineNumber = indexLine(searchTermLength, argv[2], fileContents);
+        }
+        else {
+          char task[30];
+          printf("name of task: ");
+          scanf("%s", task);
+          searchTermLength = strlen(task) + 1;
+          lineNumber = indexLine(searchTermLength, task, fileContents); 
+        }
+        printf("test");
+        deleteLine(fptr, lineNumber);
+  	    break;
+  	  case 'a':
+        if(argc == 3) {
+          appendLine(fptr, argv[2]);
+        }
+        else {
+          char task[30];
+          printf("name of task: ");
+          fgets(task, sizeof(task), stdin); //fgets includes the '\n' so I should make my own function to replace it.
+          appendLine(fptr, task);
+        }
+        break;
+  	  default:
+        read(fptr);
+        return 0;
+  	}
   }
-  fclose(fptr);
-  return counter;
+  return 0;
 }
 
-char * copy(FILE *fptr, char *sentence, int max) { //copy file content to array
-  fptr = fopen(path, "r");
-  char c;
+void copy(FILE *fptr, char *array) { //copy file content to array
+  fptr = fopen(path, "r+");
+  int i, c;
 
-  if(fptr != NULL) {
-    for(int i=0;i<max;i++) {
-      c = getc(fptr); 
-      sentence[i] = c;
-    }
+  if (fptr == NULL) {
+    printf("File does not exist.\n");
+    return;
   }
+
+  i=0;
+  while ((c = getc(fptr)) != EOF) { // this loop dosen't end for some reason? never had a problem with this before.
+    printf("char c: %c\n", c);
+    array[i++] = c; //this line is what's broken. I don't see anything wrong with this though. 
+  }
+  array[i] = '\0';
+  printf("test");
   fclose(fptr);
-  return sentence;
 }
 
-int indexLine(int sentenceLength, int searchTermLength, char *searchTerm, char *sentence) { //returns lineNumber of string
-  int offset;
-  int lineNumber = 1;
-  for(int i=0;i<sentenceLength;i++) {
-    if(sentence[i] == '\n')
+
+int indexLine(int searchTermLength, char *searchTerm, char *array) { //returns lineNumber of string
+  int offset, lineNumber, i;
+  i = 0; lineNumber = 1;
+
+  while (array[i] != '\0') {
+    if (array[i] == '\n')
       lineNumber++;
-    if(sentence[i] == searchTerm[0]) {
+    if (array[i] == searchTerm[0]) {
       offset = i;
-      while(sentence[i] == searchTerm[i - offset] && sentence[i] != '\0') {
+      while (array[i] == searchTerm[i - offset] && array[i] != '\0') {
         i++;
       }
-      if(i-offset == searchTermLength - 1) {
+      if (i-offset == searchTermLength - 1) {
         return lineNumber;
       }
     }
@@ -50,83 +96,51 @@ int indexLine(int sentenceLength, int searchTermLength, char *searchTerm, char *
   return -1;
 }
 
-void deleteLine(FILE *fptr, FILE *fptr2, int lineNumber) { //deletes line from file
-  char ch;
-  int counter = 1;
-  fptr = fopen(path, "r");
+void deleteLine(FILE *fptr1, int lineNumber) { //deletes line from file
+  FILE *fptr2;
+  int c, counter;
+  counter = 1;
+  fptr1 = fopen(path, "r");
   fptr2 = fopen("todo.new", "w");
-  while(ch != EOF) {
-    ch = getc(fptr);
-    if(counter != lineNumber && ch != EOF) {
-      putc(ch, fptr2);
+  
+  if (fptr1 == NULL) {
+    printf("File does not exist.\n");
+  }
+
+  while ((c = getc(fptr1)) != EOF) {
+    putchar(c);
+    if (counter != lineNumber) {
+      putc(c, fptr2);
     }
-    if(ch == '\n') {
+    if (c == '\n') {
       counter++;
     }
   }
-  fclose(fptr);
+
+  fclose(fptr1);
   fclose(fptr2);
   remove(path);
   rename("todo.new", path);
 }
 
-void read(FILE *fptr, int fileLength) {
-	fptr = fopen(path, "r");
-  char readFile;
-  if (fptr != NULL) {
-    char readFile[fileLength];
-    while(fgets(readFile, fileLength, fptr)) {
-      printf("%s", readFile);
-    }
+void read(FILE *fptr) {
+  char array;
+  int c;
+
+  fptr = fopen(path, "r");
+
+  if (fptr == NULL) {
+    printf("File does not exist.\n");
+    return;
   }
+  
+  while ((c = getc(fptr)) != EOF)
+    putchar(c);
   fclose(fptr);
 }
 
 void appendLine(FILE *fptr, char *task) {
   fptr = fopen(path, "a");
-  fprintf(fptr, "%s\n", task);
+  fprintf(fptr, "%s\n", task);  
   fclose(fptr);
-}
-
-int main(int argc, char **argv) {
-  FILE *fptr, *fptr2;
-  int optionVal = 0;
-  int lineNumber;
-  int max = characterCount(fptr);
-  char fileContents[max];    
-  int searchTermLength;
-
-  while(optionVal = getopt(argc, argv, "rn")) {
-  	switch(optionVal) {
-  		case 'r':
-        copy(fptr, fileContents, max);
-        if(argc == 3) {
-          searchTermLength = strlen(argv[2]) + 1; 
-          lineNumber = indexLine(max, searchTermLength, argv[2], fileContents);
-        }
-        else {
-          char task[30];
-          printf("name of task: ");
-          scanf("%s", task);
-          searchTermLength = strlen(task) + 1;
-          lineNumber = indexLine(max, searchTermLength, task, fileContents); 
-        }
-        deleteLine(fptr, fptr2, lineNumber);
-  	    break;
-  	  case 'n':
-        if(argc == 3)
-          appendLine(fptr, argv[2]);
-        else {
-          char task[30];
-          printf("name of task: ");
-          fgets(task, sizeof(task), stdin);
-          appendLine(fptr, task);
-        }
-        break;
-  	  default:
-        read(fptr, max);
-  			return 0;
-  	}
-  }
-  return 0;
 }
