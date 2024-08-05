@@ -1,5 +1,5 @@
 //program instructions: replace occurences of searchTerm with replaceTerm
-//todo: 1: read file input instead of getchar.
+//todo: overwrite file
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -12,6 +12,7 @@
 int find(char *array, char *search);
 void replace(char *array1, char *array2, char *search, char *replace);
 void copy(FILE *fptr, char *array);
+void overwrite(FILE *fptr, char *name, char *array);
 
 int main(int argc, char **argv) {
   FILE *fptr;
@@ -29,16 +30,29 @@ int main(int argc, char **argv) {
 
   char fileContents[MAXLEN];
   char fileContentsNew[MAXLEN];
-  char *searchTerm; searchTerm = argv[2];
-  char *replaceTerm; replaceTerm = argv[3]; 
+  char *searchTerm = argv[2];
+  char *replaceTerm = argv[3]; 
   
   copy(fptr, fileContents);
   replace(fileContents, fileContentsNew, searchTerm, replaceTerm);
+  overwrite(fptr, argv[1], fileContentsNew);;
 
-  int i=0;
-  while (fileContentsNew[i] != '\0')
-    putchar(fileContentsNew[i++]);
-  return 1;
+  return 0;
+}
+
+void overwrite(FILE *fptr1, char *name, char *array) {
+  char *path="./blahblahblah";
+  FILE *fptr2;
+  fptr2 = fopen(path, "w");
+  
+  int i = 0;
+  while((array[i]) != '\0')
+    putc(array[i++], fptr2);
+
+  fclose(fptr1);
+  fclose(fptr2);
+  remove(name);
+  rename(path, name);
 }
 
 void replace(char *array1, char *array2, char *search, char *replace) {
