@@ -3,34 +3,49 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <string.h>
 #define IN 1
 #define OUT 0
 #define EXIT 2
 #define MAXLEN 1000
 
-char searchTerm[] = "berry";
-char replaceTerm[] = "pineapple"; 
-int searchTermLength = sizeof(searchTerm) / sizeof(searchTerm[0]);
-int replaceTermLength = sizeof(replaceTerm) / sizeof(replaceTerm[0]);
-
 int find(char *array, char *search);
 void replace(char *array1, char *array2, char *search, char *replace);
-void copy(char *array);
+void copy(FILE *fptr, char *array);
 
-int main(void) {
+int main(int argc, char **argv) {
+  FILE *fptr;
+  fptr = fopen(argv[1], "r");
+  
+  if (argc != 4) {
+    puts("replace <file> <searchTerm> <replaceTerm>");
+    return 1;
+  }
+
+  if (fptr == NULL) {
+    puts("File does not exist\n");
+    return 1;
+  }
+
   char fileContents[MAXLEN];
   char fileContentsNew[MAXLEN];
+  char *searchTerm; searchTerm = argv[2];
+  char *replaceTerm; replaceTerm = argv[3]; 
+  
+  copy(fptr, fileContents);
+  replace(fileContents, fileContentsNew, searchTerm, replaceTerm);
 
   int i=0;
-  
-  copy(fileContents);
-  replace(fileContents, fileContentsNew, searchTerm, replaceTerm);
   while (fileContentsNew[i] != '\0')
     putchar(fileContentsNew[i++]);
+  return 1;
 }
 
 void replace(char *array1, char *array2, char *search, char *replace) {
   int offset = find(array1, search);
+  int searchTermLength = strlen(search) + 1;
+  int replaceTermLength = strlen(replace) + 1;
+
   int i, j, k, state;
   state = OUT;
   k=0;
@@ -57,7 +72,7 @@ void replace(char *array1, char *array2, char *search, char *replace) {
         
         //set i to start of [ D ]. append [ D ] to fileContentsNew
         for (i=0; i<replaceTermLength-1; i++)
-          array2[k++] = replaceTerm[i]; 
+          array2[k++] = replace[i]; 
         
         //set i to beginning of [ C ]; set j to beginning of [ A ]
         i = offset+searchTermLength-1; 
@@ -76,6 +91,7 @@ void replace(char *array1, char *array2, char *search, char *replace) {
 
 int find(char *array, char *search) {
   int offset, i;
+  int searchTermLength = strlen(search) + 1;
   i = 0;
   while (array[i] != '\0') {
     if (array[i] == search[0]) {
@@ -91,11 +107,11 @@ int find(char *array, char *search) {
 }
 
 
-void copy(char *array) {
+void copy(FILE *fptr, char *array) {
   int i, c;  
   i = 0;
 
-  while((c = getchar()) != EOF) { 
+  while((c = getc(fptr)) != EOF) { 
     *(array++) = c;    
   }
   *array = '\0';
