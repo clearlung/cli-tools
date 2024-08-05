@@ -4,11 +4,15 @@ int main(int argc, char **argv) {
   FILE *fptr;
   int c;
 
-  if (argc > 1) {
+  if (argc == 2) {
     fptr = fopen(argv[1], "r");
   }
   else if (argc == 1) {
-    printf("Directory not provided\n");
+    puts("Directory not provided");
+    return 1;
+  }
+  else {
+    puts("cp <targetFile> <destinationFile>");
     return 1;
   }
   

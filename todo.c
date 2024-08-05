@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <getopt.h>
-#include <string.h>
+#include <string.h> //only here cause sizeof fails with argv[i], should make my own strlen instead.
 #define MAX 1000
 
 const char *path="/home/clear/programming/cli.tools/todo.txt";
@@ -66,7 +66,7 @@ void returnTask(char *array) {
     }
     else if (c == '\n') {
       array[i] = '\0';
-      break;
+      break;kk
     }
   }
 }

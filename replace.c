@@ -1,4 +1,5 @@
 //program instructions: replace occurences of searchTerm with replaceTerm
+//todo: 1: read file input instead of getchar.
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -12,27 +13,24 @@ char replaceTerm[] = "pineapple";
 int searchTermLength = sizeof(searchTerm) / sizeof(searchTerm[0]);
 int replaceTermLength = sizeof(replaceTerm) / sizeof(replaceTerm[0]);
 
-typedef struct {
-  char fileContents[MAXLEN];
-  char fileContentsNew[MAXLEN];
-} Text;
-
 int find(char *array, char *search);
-void replace(Text *text, char *search, char *replace);
+void replace(char *array1, char *array2, char *search, char *replace);
 void copy(char *array);
 
 int main(void) {
-  Text text;
+  char fileContents[MAXLEN];
+  char fileContentsNew[MAXLEN];
+
   int i=0;
   
-  copy(text.fileContents);
-  replace(&text, searchTerm, replaceTerm);
-  while (text.fileContentsNew[i] != '\0')
-    putchar(text.fileContentsNew[i++]);
+  copy(fileContents);
+  replace(fileContents, fileContentsNew, searchTerm, replaceTerm);
+  while (fileContentsNew[i] != '\0')
+    putchar(fileContentsNew[i++]);
 }
 
-void replace(Text *text, char *search, char *replace) {
-  int offset = find(text->fileContents, search);
+void replace(char *array1, char *array2, char *search, char *replace) {
+  int offset = find(array1, search);
   int i, j, k, state;
   state = OUT;
   k=0;
@@ -44,10 +42,10 @@ void replace(Text *text, char *search, char *replace) {
       else if (offset == -1) {
         i = 0;
         //append [ C ] to fileContentsNew
-        while (text->fileContents[i] != '\0') {
-          text->fileContentsNew[k++] = text->fileContents[i++]; 
+        while (array1[i] != '\0') {
+          array2[k++] = array1[i++]; 
         }
-        text->fileContentsNew[k] = '\0';
+        array2[k] = '\0';
         state = EXIT;
       }
     }
@@ -55,22 +53,22 @@ void replace(Text *text, char *search, char *replace) {
       if (offset != -1) {
         //set i to start of the block. copy [ A ] to fileContentsNew
         for (i=0; i<offset; i++)
-          text->fileContentsNew[k++] = text->fileContents[i];
+          array2[k++] = array1[i];
         
         //set i to start of [ D ]. append [ D ] to fileContentsNew
         for (i=0; i<replaceTermLength-1; i++)
-          text->fileContentsNew[k++] = replaceTerm[i]; 
+          array2[k++] = replaceTerm[i]; 
         
         //set i to beginning of [ C ]; set j to beginning of [ A ]
         i = offset+searchTermLength-1; 
         j = 0;
 
         // Overwrite [ A ][ B ][ C ] with [ C ]
-        while (text->fileContents[i] != '\0')  
-          text->fileContents[j++] = text->fileContents[i++];      
-        text->fileContents[j] = '\0'; 
+        while (array1[i] != '\0')  
+          array1[j++] = array1[i++];      
+        array1[j] = '\0'; 
       }
-      offset = find(text->fileContents, search);
+      offset = find(array1, search);
       state = OUT;
     }
   }

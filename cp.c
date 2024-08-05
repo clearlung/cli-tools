@@ -3,16 +3,14 @@
 void copy(FILE *fptr1, FILE *fptr2);
 
 int main(int argc, char **argv) {
-  FILE *fptr1, *fptr2;
-
   if (argc != 3) {
-    printf("cp <targetFile> <destinationFile>\n");
+    puts("cp <targetFile> <destinationFile>");
     return 1;
   }
 
+  FILE *fptr1, *fptr2;
   fptr1 = fopen(argv[1], "r");
   fptr2 = fopen(argv[2], "w");
-
 
   if (fptr1 == NULL) {
     puts("<targetFile> does not exist");
