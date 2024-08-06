@@ -1,5 +1,4 @@
 //program instructions: replace occurences of searchTerm with replaceTerm
-//todo: overwrite file
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -7,7 +6,7 @@
 #define IN 1
 #define OUT 0
 #define EXIT 2
-#define MAXLEN 1000
+#define MAXLEN 10000
 
 int find(char *array, char *search);
 void replace(char *array1, char *array2, char *search, char *replace);
@@ -15,14 +14,14 @@ void copy(FILE *fptr, char *array);
 void overwrite(FILE *fptr, char *name, char *array);
 
 int main(int argc, char **argv) {
-  FILE *fptr;
-  fptr = fopen(argv[1], "r");
-  
   if (argc != 4) {
-    puts("replace <file> <searchTerm> <replaceTerm>");
+    puts("replace <file> <searchTerm> <replaceTerm>\n");
     return 1;
   }
 
+  FILE *fptr;
+  fptr = fopen(argv[1], "r");
+  
   if (fptr == NULL) {
     puts("File does not exist\n");
     return 1;

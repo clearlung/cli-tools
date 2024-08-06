@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <getopt.h>
-#include <string.h> //only here cause sizeof fails with argv[i], should make my own strlen instead.
+#include <string.h>
 #define MAX 1000
 
 const char *path="/home/clear/programming/cli.tools/todo.txt";
@@ -19,6 +19,12 @@ int main(int argc, char **argv) {
   int lineNumber;
   char fileContents[MAX];    
   int searchTermLength;
+  
+  fptr = fopen(path, "r");
+  if (fptr == NULL) {
+    printf("Text file not specified\n");
+    return 1;
+  }
 
   while (optionVal = getopt(argc, argv, "ar")) {
   	switch(optionVal) {
@@ -53,6 +59,7 @@ int main(int argc, char **argv) {
         return 0;
   	}
   }
+  fclose(fptr);
   return 0;
 }
 
@@ -66,19 +73,17 @@ void returnTask(char *array) {
     }
     else if (c == '\n') {
       array[i] = '\0';
-      break;kk
+      break;
     }
   }
 }
 
 void copy(FILE *fptr, char *array) { //copy file content to array
-  fptr = fopen(path, "r");
   int i, c;
-
   i=0;
-  while ((c = fgetc(fptr)) != EOF) {
+
+  while ((c = fgetc(fptr)) != EOF)
     array[i++] = c;
-  }
   array[i] = '\0';
   
   fclose(fptr);
@@ -110,11 +115,11 @@ void deleteLine(FILE *fptr1, int lineNumber) { //deletes line from file
   FILE *fptr2;
   int c, counter;
   counter = 1;
-  fptr1 = fopen(path, "r");
   fptr2 = fopen("todo.new", "w");
   
-  if (fptr1 == NULL) {
-    printf("File does not exist.\n");
+  if (fptr2 == NULL) {
+    printf("Could not create file.\n");
+    exit(1);
   }
 
   while ((c = getc(fptr1)) != EOF) {
@@ -135,13 +140,6 @@ void deleteLine(FILE *fptr1, int lineNumber) { //deletes line from file
 void read(FILE *fptr) {
   char array;
   int c;
-
-  fptr = fopen(path, "r");
-
-  if (fptr == NULL) {
-    printf("File does not exist.\n");
-    return;
-  }
   
   while ((c = getc(fptr)) != EOF)
     putchar(c);
@@ -150,7 +148,7 @@ void read(FILE *fptr) {
 
 void appendLine(FILE *fptr, char *task, int mode) {
   char newLine = '\n';
-  fptr = fopen(path, "a");
+
   switch (mode) {
     case 1:
       fprintf(fptr, "%s", task);  
