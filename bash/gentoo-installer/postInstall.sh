@@ -1,5 +1,6 @@
 user=clear
 which=both
+dir=/gentoo-installer
 
 useradd -mG users,wheel,audio,video -s /bin/bash $user
 passwd $user
@@ -50,3 +51,14 @@ case $which in
     echo "permit nopass :wheel" >> /etc/doas.conf
     ;;
 esac
+
+rc-update add dbus default
+rc-update add elogind default
+rc-service dbus start
+rc-service elogind start
+
+mkdir -p /etc/X11/xorg.conf.d
+cp $dir/xorg/00-keyboard.conf /etc/X11/xorg.conf.d/
+mkdir -p /etc/X11/xkb/symbols
+cp $dir/xorg/pc /etc/X11/xkb/symbols
+sudo -u $user cp $dir/home/.* /home/$user 
