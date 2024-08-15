@@ -21,6 +21,3 @@ eselect locale list
 read -sp "Locale: " locale
 eselect locale set $locale
 env-update && . /etc/profile
-
-echo "sys-kernel/linux-firmeware linux-fw-redistributable" >> /etc/portage/package.license
-emerge sys-kernel/linux-firmware

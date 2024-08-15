@@ -1,1 +1,0 @@
-emerge app-editors/vim

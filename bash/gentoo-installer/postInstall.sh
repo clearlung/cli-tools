@@ -1,11 +1,18 @@
+user=clear
+which=both
+
+useradd -mG users,wheel,audio,video -s /bin/bash $user
+passwd $user
+
+#my packages
 #x11
 echo "x11-libs/libdrm video_cards_radeon" > /etc/portage/package.use/libdrm
 echo "sys-auth/pambase elogind" > /etc/portage/package.use/pambase
-emerge libX11 libXinerama libXft xorg-server xmodmap x11-drivers/xf86-video-fbdev xf86-video-vesa
+emerge x11-libs/libX11 x11-libs/libXinerama x11-libs/libXft x11-base/xorg-server x11-drivers/xf86-video-fbdev xf86-video-vesa
 #misc
 emerge app-editors/neovim app-shells/fzf app-misc/ranger app-misc/fastfetch
 emerge net-misc/curl net-misc/yt-dlp dev-vcs/git
-emerge app-admin/doas htop dbus elogind
+emerge sys-process/htop sys-apps/dbus sys-auth/elogind x11-apps/xmodmap
 #audio
 echo "media-video/pipewire sound-server" > /etc/portage/package.use/pipewire
 echo "media-video/pulseaudio daemon" >> /etc/portage/package.use/pipewire
@@ -24,3 +31,22 @@ echo "dev-python/PyQt6-WebEngine opengl" >> /etc/portage/package.use/qutebrowser
 echo "dev-libs/libxml2 icu" >> /etc/portage/package.use/qutebrowser
 echo "sys-libs/zlib minizip" >> /etc/portage/package.use/qutebrowser
 emerge www-client/qutebrowser
+
+case $which in
+  sudo) 
+    emerge app-admin/sudo
+    echo "%wheel ALL=(ALL:ALL) NOPASSWD: ALL" >> /etc/sudoers
+    ;;
+  doas)
+    emerge app-admin/doas
+    echo "permit nopass :wheel" >> /etc/doas.conf
+    ;;
+  none)
+    ;;  
+  *)
+    emerge app-admin/sudo
+    echo "%wheel ALL=(ALL:ALL) NOPASSWD: ALL" >> /etc/sudoers
+    emerge app-admin/doas
+    echo "permit nopass :wheel" >> /etc/doas.conf
+    ;;
+esac
