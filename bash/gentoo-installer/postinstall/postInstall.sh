@@ -1,6 +1,6 @@
 user=clear
 which=both
-dir=/gentoo-installer
+dir=/gentoo-installer/postinstall
 
 useradd -mG users,wheel,audio,video -s /bin/bash $user
 passwd $user

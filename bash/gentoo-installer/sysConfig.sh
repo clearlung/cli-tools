@@ -1,7 +1,8 @@
 #!/bin/bash
 editor=nano
 
-read -sp "boot partition: " bootPartition
+lsblk
+read -sp "boot partition: " bootPartition #preferably convert partition identifier to UUID
 read -sp "root partition: " rootPartition 
 
 echo "$rootPartition  / ext4  defaults  0 1" >> /etc/fstab

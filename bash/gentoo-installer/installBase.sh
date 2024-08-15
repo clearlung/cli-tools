@@ -1,8 +1,5 @@
 editor=nano
 region=America
-cp /gentoo-installer/portage/make.conf /mnt/gentoo/etc/portage
-cp --dereference /etc/resolv.conf /mnt/gentoo/etc
-arch-chroot /mnt/gentoo
 
 emerge-webrsync
 emerge --oneshot app-portage/mirrorselect
