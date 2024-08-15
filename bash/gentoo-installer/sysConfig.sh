@@ -1,23 +1,31 @@
 #!/bin/bash
-editor=nano
+editor=vim
+installerDir=/gentoo-installer
 
+#fstab
 lsblk
-read -sp "boot partition: " bootPartition #preferably convert partition identifier to UUID
-read -sp "root partition: " rootPartition 
 
-echo "$rootPartition  / ext4  defaults  0 1" >> /etc/fstab
-echo "$bootPartition  /efi  vfat  defaults  1 2" >> /etc/fstab
+read -rp "root partition: " rootPartition 
+read -rp "boot partition: " bootPartition #preferably convert partition identifier to UUID
 
-read -sp "hostname: " hostname
+echo "/dev/$rootPartition  / ext4  defaults  0 1" >> /etc/fstab
+echo "/dev/$bootPartition  /efi  vfat  defaults  1 2" >> /etc/fstab
+
+read -rp "hostname: " hostname
 echo $hostname > /etc/hostname
 
+#misc
 passwd
 $editor /etc/conf.d/keymaps
+cp $installerDir/misc/mod-dh-ansi-us-wide.map.gz /usr/share/keymaps/i386/colemak
+
+#bootloader
+echo 'GRUB_PLATFORMS="efi-64"' >> /etc/portage/make.conf
+emerge grub
+grub-install --efi-directory=/efi
+grub-mkconfig -o /boot/grub/grub.cfg
 
 #essentials
-echo "sys-kernel/linux-firmware linux-fw-redistributable" >> /etc/portage/package.license
-emerge sys-kernel/linux-firmware
-
 emerge net-misc/dhcpcd
 rc-update add dhcpcd default
 
