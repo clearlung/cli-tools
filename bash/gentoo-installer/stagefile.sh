@@ -2,8 +2,8 @@ rootDir=/mnt/gentoo
 installerDir=/mnt/gentoo/gentoo-installer
 
 chronyd -q
-wget http://www.gtlib.gatech.edu/pub/gentoo/releases/amd64/autobuilds/current-stage3-amd64-hardened-openrc/stage3-amd64-hardened-openrc-20240811T170405Z.tar.xz
-wget http://www.gtlib.gatech.edu/pub/gentoo/releases/amd64/autobuilds/current-stage3-amd64-hardened-openrc/stage3-amd64-hardened-openrc-20240811T170405Z.tar.xz.sha256
+links gentoo.org/downloads/mirrors
+
 sha256sum -c stage3-*.sha256
 rm stage3-*.sha256
 read -rp "Proceed? [Y/N]: " answer

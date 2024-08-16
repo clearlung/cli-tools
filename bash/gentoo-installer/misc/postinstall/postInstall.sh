@@ -17,9 +17,9 @@ mkdir -p /etc/X11/xorg.conf.d
 cp $dir/xorg/00-keyboard.conf /etc/X11/xorg.conf.d/
 mkdir -p /etc/X11/xkb/symbols
 cp $dir/xorg/pc /etc/X11/xkb/symbols
-#sudo -u $user cp $dir/home/.* /home/$user  #don't know if this works
-cp $dir/home/.* /home/$user
-chown -R $user:$user /home/$user
+sudo -u $user cp $dir/home/.* /home/$user  #don't know if this works
+#cp $dir/home/.* /home/$user
+#chown -R $user:$user /home/$user
 
 emerge sys-apps/dbus sys-auth/elogind 
 
@@ -27,5 +27,3 @@ rc-update add dbus default
 rc-update add elogind default
 rc-service dbus start
 rc-service elogind start
-
-#should probably install mesa drivers too
