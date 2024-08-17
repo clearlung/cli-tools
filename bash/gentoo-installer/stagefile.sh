@@ -4,8 +4,8 @@ installerDir=/mnt/gentoo/gentoo-installer
 chronyd -q
 links gentoo.org/downloads/mirrors
 
-sha256sum -c stage3-*.sha256
-rm stage3-*.sha256
+sha256sum -c stage3-*.sha256.xz
+rm stage3-*.sha256.xz
 read -rp "Proceed? [Y/N]: " answer
 
 case $answer in
@@ -14,7 +14,7 @@ case $answer in
         tar xpvf /mnt/gentoo/stage3-*.tar.xz -C $rootDir --xattrs-include='*.*' --numeric-owner
         cp $installerDir/portage/make.conf $rootDir/etc/portage
         cp --dereference /etc/resolv.conf $rootDir/etc
-        rm $rootDir/stage3-*.tar.xz
+        rm $installerDir/stage3-*.tar.xz
         ;;
     *)
         echo "Cancelled"

@@ -19,12 +19,6 @@ passwd
 $editor /etc/conf.d/keymaps
 cp $installerDir/misc/mod-dh-ansi-us-wide.map.gz /usr/share/keymaps/i386/colemak
 
-#bootloader
-echo 'GRUB_PLATFORMS="efi-64"' >> /etc/portage/make.conf
-emerge grub
-grub-install --efi-directory=/efi
-grub-mkconfig -o /boot/grub/grub.cfg
-
 #essentials
 emerge net-misc/dhcpcd
 rc-update add dhcpcd default
