@@ -15,7 +15,7 @@ mkdir -p /etc/X11/xorg.conf.d
 cp $dir/xorg/00-keyboard.conf /etc/X11/xorg.conf.d/
 mkdir -p /etc/X11/xkb/symbols
 cp $dir/xorg/pc /etc/X11/xkb/symbols
-sudo -u $user cp -R $dir/home/.* /home/$user  #don't know if this works
+sudo -u $user cp -R $dir/home/.* /home/$user
 
 emerge sys-apps/dbus sys-auth/elogind 
 

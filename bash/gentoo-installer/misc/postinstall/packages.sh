@@ -14,22 +14,24 @@ cp $installerDir/portage/use/qutebrowser /etc/portage/package.use
 emerge dev-python/adblock www-client/qutebrowser net-p2p/qbittorrent
 
 #other bullshit
-emerge media-libs/mesa
+emerge media-libs/mesa sys-fs/fuse:0
 
 emerge --no-replace app-eselect/eselect-repository
 eselect repository enable steam-overlay
 emaint -r steam-overlay sync
 
 cp $installerDir/portage/use/steam /etc/portage/package.use/steam
-echo "*/*::steam-overlay" > /etc/portage/package.accept_keywords/steam #should use multiline echo or just copy the file instead of calling echo 3 times
-echo "games-util/game-device-udev-rules" >> /etc/portage/package.accept_keywords/steam
-echo "sys-libs/libudev-compat" >> /etc/portage/package.accept_keywords/steam
+echo "*/*::steam-overlay
+games-util/game-device-udev-rules
+sys-libs/libudev-compat" > /etc/portage/package.accept_keywords/steam
 echo "games-util/steam-launcher ValveSteamLicense" >> /etc/portage/package.license
-
 emerge games-util/steam-launcher
 
-echo "www-client/librewolf ~amd64" >> /etc/portage/package.accept_keywords/librewolf #same as comment above
-echo "dev-libs/nss ~amd64" >> /etc/portage/package.accept_keywords/librewolf
+echo "www-client/librewolf ~amd64
+dev-libs/nss ~amd64" >> /etc/portage/package.accept_keywords/librewolf
+echo "sys-libs/readline abi_x86_32
+dev-db/sqlite abi_x86_32" >> /etc/portage/package.use/librewolf
 eselect repository enable librewolf
 emaint -r librewolf sync
 emerge www-client/librewolf
+
