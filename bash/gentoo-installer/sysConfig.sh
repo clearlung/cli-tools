@@ -16,8 +16,14 @@ echo $hostname > /etc/hostname
 
 #misc
 passwd
+
+#keyboard conf
 $editor /etc/conf.d/keymaps
-cp $installerDir/misc/mod-dh-ansi-us-wide.map.gz /usr/share/keymaps/i386/colemak
+cp $installerDir/postinstall/mod-dh-ansi-us-wide.map.gz /usr/share/keymaps/i386/colemak
+mkdir -p /etc/X11/xorg.conf.d
+cp $installerDir/postinstall/xorg/00-keyboard.conf /etc/X11/xorg.conf.d/
+mkdir -p /etc/X11/xkb/symbols
+cp $installerDir/postinstall/xorg/pc /etc/X11/xkb/symbols
 
 #essentials
 emerge net-misc/dhcpcd

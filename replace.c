@@ -80,12 +80,12 @@ void replace(char *array1, char *array2, char *search, char *replace) {
     if (state == IN) {
       if (offset != -1) {
         //set i to start of the block. copy [ A ] to fileContentsNew
-        for (i=0; i<offset; i++)
-          array2[k++] = array1[i];
+        for (i=0; i<offset; i++, k++)
+          array2[k] = array1[i];
         
         //set i to start of [ D ]. append [ D ] to fileContentsNew
-        for (i=0; i<replaceTermLength-1; i++)
-          array2[k++] = replace[i]; 
+        for (i=0; i<replaceTermLength-1; i++, k++)
+          array2[k] = replace[i]; 
         
         //set i to beginning of [ C ]; set j to beginning of [ A ]
         i = offset+searchTermLength-1; 

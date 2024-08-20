@@ -1,4 +1,4 @@
-dir=/gentoo-installer/misc/postinstall
+postInstallDir=/gentoo-installer/postinstall
 read -rp "username: " user
 useradd -mG users,wheel,audio,video -s /bin/bash $user
 passwd $user
@@ -11,11 +11,7 @@ emerge x11-libs/libX11 x11-libs/libXinerama x11-libs/libXft x11-base/xorg-server
 emerge app-admin/sudo
 echo "%wheel ALL=(ALL:ALL) NOPASSWD: ALL" >> /etc/sudoers
 
-mkdir -p /etc/X11/xorg.conf.d
-cp $dir/xorg/00-keyboard.conf /etc/X11/xorg.conf.d/
-mkdir -p /etc/X11/xkb/symbols
-cp $dir/xorg/pc /etc/X11/xkb/symbols
-sudo -u $user cp -R $dir/home/.* /home/$user
+sudo -u $user cp -R $postInstallDir/home/.* /home/$user
 
 emerge sys-apps/dbus sys-auth/elogind 
 
