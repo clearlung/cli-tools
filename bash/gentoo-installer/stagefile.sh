@@ -12,7 +12,7 @@ case $answer in
     [yY])
         mv stage3-*.tar.xz /mnt/gentoo
         tar xpvf /mnt/gentoo/stage3-*.tar.xz -C $rootDir --xattrs-include='*.*' --numeric-owner
-        cp $installerDir/portage/make.conf $rootDir/etc/portage
+        cp $installerDir/gentoo/portage/make.conf $rootDir/etc/portage
         cp --dereference /etc/resolv.conf $rootDir/etc
         rm $installerDir/stage3-*.tar.xz
         ;;
