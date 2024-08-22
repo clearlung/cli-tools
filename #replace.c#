@@ -104,21 +104,23 @@ void replace(char *array1, char *array2, char *search, char *replace) {
 
 int find(char *array, char *search) {
   int offset, i;
-  int searchTermLength = strlen(search);
+ 
+
+ //I think searchTermLength is only used in one comparison and that it is unnecessary to add 1 to the length. This is because I'm comparing the length of the word, not the length of the word + '\0'
+  int searchTermLength = strlen(search) + 1;
   i = 0;
   while (array[i] != '\0') {
     if (array[i] == search[0]) {
       offset = i;
       while (array[i] == search[i - offset] && array[i] != '\0')
         i++;
-      if (i-offset == searchTermLength)
+      if (i-offset == searchTermLength-1)
         return offset;
     }
     i++;
   }
   return -1;
 }
-
 
 void copy(FILE *fptr, char *array) {
   int i, c;  
