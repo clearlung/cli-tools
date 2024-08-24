@@ -9,6 +9,9 @@ echo "*/* $(cpuid2cpuflags)" > /etc/portage/package.use/00cpu-flags
 
 if [[ $editor == "vim" ]]; then
   emerge vim
+  eselect editor list
+  read -rp "Number: " editornum
+  eselect editor set $editornum
 else
   editor=nano
 fi

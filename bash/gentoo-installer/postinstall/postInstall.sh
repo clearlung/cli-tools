@@ -13,7 +13,7 @@ echo "%wheel ALL=(ALL:ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 sudo -u $user cp -R $postInstallDir/home/.* /home/$user
 
-emerge sys-apps/dbus sys-auth/elogind 
+emerge sys-apps/dbus sys-auth/elogind
 
 rc-update add dbus default
 rc-update add elogind default
