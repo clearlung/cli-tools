@@ -1,5 +1,5 @@
-editor=vim
-region=America
+#editor=vim
+#region=America
 
 emerge-webrsync
 emerge --oneshot app-portage/mirrorselect
@@ -10,20 +10,25 @@ echo "*/* $(cpuid2cpuflags)" > /etc/portage/package.use/00cpu-flags
 if [[ $editor == "vim" ]]; then
   emerge vim
   eselect editor list
-  read -rp "Number: " editornum
+  read -rp "number: " editornum
+  eselect editor set $editornum
+else if [[ $editor == "emacs" ]]; then
+  emerge emacs
+  eselect editor list
+  read -rp "number: " editornum
   eselect editor set $editornum
 else
-  editor=nano
+  export editor=nano
 fi
 
 ls /usr/share/zoneinfo/$region
-read -rp "City: " city
+read -rp "city: " city
 echo "$region/$city" > /etc/timezone
 emerge --config sys-libs/timezone-data
 
 $editor /etc/locale.gen
 locale-gen
 eselect locale list
-read -rp "Locale: " locale
+read -rp "locale: " locale
 eselect locale set $locale
 . /etc/profile

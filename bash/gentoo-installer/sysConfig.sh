@@ -1,5 +1,5 @@
-editor=vim
-installerDir=/gentoo-installer
+#editor=vim
+#installerDir=/gentoo-installer
 
 #fstab
 lsblk

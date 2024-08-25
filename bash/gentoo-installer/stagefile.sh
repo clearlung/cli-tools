@@ -1,4 +1,3 @@
-rootDir=/mnt/gentoo
 installerDir=/mnt/gentoo/gentoo-installer
 
 chronyd -q
@@ -27,7 +26,7 @@ read -rp "arch-chroot $rootDir [Y/N]: " answer
 case $answer in
   [yY])
     arch-chroot $rootDir
-    rootDir=/
+    export rootDir=/
     ;;
   *)
     echo "Cancelled"
