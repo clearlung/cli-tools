@@ -1,2 +1,7 @@
 (defun ftoc (fahr)
-  (let ((celsius (/ (* 5 (- fahr 32)) 9))) (format t "result: ~a" celsius)))
+  (let ((celsius (float (/ (* 5 (- fahr 32)) 9)))) (format t "~a~6t~a~%" fahr celsius)))
+(defun istilleatcerealwithoutmilk ()
+  (format t "Fahr~6tCels~%")
+  (do ((i 0 (+ i 20)))
+    ((> i 300))
+    (ftoc i)))

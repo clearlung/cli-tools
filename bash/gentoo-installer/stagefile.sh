@@ -1,3 +1,4 @@
+rootDir=/mnt/gentoo
 installerDir=/mnt/gentoo/gentoo-installer
 
 chronyd -q

@@ -2,7 +2,7 @@ installerDir=/gentoo-installer
 
 #misc
 echo "permit nopass :wheel" > /etc/doas.conf
-emerge app-editors/neovim app-shells/fzf app-misc/ranger app-misc/fastfetch net-misc/curl net-misc/yt-dlp dev-vcs/git sys-process/htop app-admin/doas x11-apps/xmodmap
+emerge app-editors/vim app-shells/fzf app-misc/ranger app-misc/fastfetch net-misc/curl net-misc/yt-dlp dev-vcs/git sys-process/htop app-admin/doas x11-apps/xmodmap
 #audio
 echo "media-video/pipewire sound-server pipewire-alsa" > /etc/portage/package.use/pipewire
 echo "media-video/pulseaudio daemon" >> /etc/portage/package.use/pipewire
@@ -14,6 +14,7 @@ cp $installerDir/gentoo/portage/use/qutebrowser /etc/portage/package.use
 emerge dev-python/adblock www-client/qutebrowser net-p2p/qbittorrent
 
 #other bullshit
+
 emerge media-libs/mesa sys-fs/fuse:0
 
 emerge --no-replace app-eselect/eselect-repository
@@ -26,3 +27,4 @@ games-util/game-device-udev-rules
 sys-libs/libudev-compat" > /etc/portage/package.accept_keywords/steam
 echo "games-util/steam-launcher ValveSteamLicense" >> /etc/portage/package.license
 emerge games-util/steam-launcher
+
