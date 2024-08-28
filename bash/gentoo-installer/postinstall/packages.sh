@@ -14,7 +14,9 @@ cp $installerDir/gentoo/portage/use/qutebrowser /etc/portage/package.use
 emerge dev-python/adblock www-client/qutebrowser net-p2p/qbittorrent
 
 #other bullshit
-echo "media-libs/mesa vulkan" > /etc/portage/package.use/mesa
+echo "x11-libs/gtk+ wayland" >> /etc/portage/package.use/gtk
+emerge x11-libs/gtk+
+echo "media-libs/mesa vulkan wayland" > /etc/portage/package.use/mesa
 emerge media-libs/mesa sys-fs/fuse:0
 
 emerge --no-replace app-eselect/eselect-repository

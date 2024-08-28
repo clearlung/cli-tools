@@ -17,22 +17,19 @@ echo $hostname > /etc/hostname
 passwd
 
 #keyboard conf
-#$editor /etc/conf.d/keymaps
 sed -i "s/us/mod-dh-ansi-us-wide" /etc/conf.d/keymaps
-cp $installerDir/postinstall/mod-dh-ansi-us-wide.map.gz /usr/share/keymaps/i386/colemak
+cp $installerDir/postinstall/misc/mod-dh-ansi-us-wide.map.gz /usr/share/keymaps/i386/colemak
 mkdir -p /etc/X11/xorg.conf.d
 cp $installerDir/postinstall/xorg/00-keyboard.conf /etc/X11/xorg.conf.d/
 ln -s -p /usr/share/X11/xkb/ /etc/X11/xkb/
 cp $installerDir/postinstall/xorg/pc /etc/X11/xkb/symbols
 
-
+#essentials
+emerge app-shells/bash-completion
 emerge net-misc/dhcpcd
 emerge net-wireless/wpa_supplicant
 emerge net-misc/chrony
 emerge app-admin/sysklogd
-emerge app-shells/bash-completion
-
-#essentials
 
 rc-update add dhcpcd default
 rc-update add wpa_supplicant default

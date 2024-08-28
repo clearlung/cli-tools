@@ -1,7 +1,7 @@
 #no idea if this works
 export rootDir=/
 export installerDir=/gentoo-installer
-export editor=emacs
+export editor=vi
 export kernel=sys-kernel/vanilla-sources
 export region=America
 

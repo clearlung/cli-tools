@@ -1,4 +1,4 @@
-#editor=vim
+#editor=vi
 #region=America
 
 emerge-webrsync
@@ -7,7 +7,12 @@ mirrorselect -io >> /etc/portage/make.conf
 emerge --oneshot app-portage/cpuid2cpuflags
 echo "*/* $(cpuid2cpuflags)" > /etc/portage/package.use/00cpu-flags
 
-if [[ $editor == "vim" ]]; then
+if [[ $editor == "vi" ]]; then
+  emerge vim
+  eselect editor list
+  read -rp "number: " editornum
+  eselect editor set $editornum
+else if [[ $editor == "vim" ]]; then
   emerge vim
   eselect editor list
   read -rp "number: " editornum
