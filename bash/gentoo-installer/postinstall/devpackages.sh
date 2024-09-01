@@ -2,7 +2,9 @@ installerDir=/gentoo-installer
 
 #opengl
 emerge media-libs/glfw
-emerge media-libs/libsdl2
+
+echo "media-libs/freetype harfbuzz" >>  /etc/portage/package.use/sdl2
+emerge media-libs/sdl2-image media-libs/sdl2-ttf media-libs/libsdl2
 
 #lisp
 emerge dev-lisp/sbcl

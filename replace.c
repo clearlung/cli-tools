@@ -56,8 +56,8 @@ void overwrite(FILE *fptr1, char *name, char *array) {
 
 void replace(char *array1, char *array2, char *search, char *replace) {
   int offset = find(array1, search);
-  int searchTermLength = strlen(search) + 1;
-  int replaceTermLength = strlen(replace) + 1;
+  int searchTermLength = strlen(search);
+  int replaceTermLength = strlen(replace);
 
   int i, j, k, state;
   state = OUT;
@@ -84,11 +84,11 @@ void replace(char *array1, char *array2, char *search, char *replace) {
           array2[k] = array1[i];
         
         //set i to start of [ D ]. append [ D ] to fileContentsNew
-        for (i=0; i<replaceTermLength-1; i++, k++)
+        for (i=0; i<replaceTermLength; i++, k++)
           array2[k] = replace[i]; 
         
         //set i to beginning of [ C ]; set j to beginning of [ A ]
-        i = offset+searchTermLength-1; 
+        i = offset+searchTermLength;
         j = 0;
 
         // Overwrite [ A ][ B ][ C ] with [ C ]
