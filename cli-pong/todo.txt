@@ -1,2 +1,1 @@
-render player scores (5x3 numbers)
 process user input
