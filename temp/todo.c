@@ -1,10 +1,13 @@
+//this program doesn't work anymore? 
+//todo -a does nothing
+//todo -r does "free(): double free detected in tcache 2\nAborted" i think this is because I close fptr twice?
 #include <stdio.h>
 #include <stdlib.h>
 #include <getopt.h>
 #include <string.h>
 #define MAX 1000
 
-const char *path="/home/clear/programming/cli.tools/todo.txt";
+const char *path="./todo.txt";
 
 void copy(FILE *fptr, char *array);
 int indexLine(char *searchTerm, int searchTermLength, char *array);
@@ -59,7 +62,6 @@ int main(int argc, char **argv) {
         return 0;
   	}
   }
-  fclose(fptr);
   return 0;
 }
 

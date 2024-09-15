@@ -1,5 +1,5 @@
-#editor=vi
-#region=America
+[ -z "$editor" ] && editor=vi
+[ -z "$region"] && region=America
 
 emerge-webrsync
 emerge --oneshot app-portage/mirrorselect
@@ -8,7 +8,7 @@ emerge --oneshot app-portage/cpuid2cpuflags
 echo "*/* $(cpuid2cpuflags)" > /etc/portage/package.use/00cpu-flags
 
 if [[ $editor == "vi" ]]; then
-  emerge vim
+  emerge vi
   eselect editor list
   read -rp "number: " editornum
   eselect editor set $editornum

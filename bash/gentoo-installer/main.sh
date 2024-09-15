@@ -1,4 +1,3 @@
-#no idea if this works
 export rootDir=/
 export installerDir=/gentoo-installer
 export editor=vi
@@ -8,7 +7,7 @@ export region=America
 read -sp "start? [Y/N]: " answer
 case $answer in
   [Yy])
-    bash installBase.sh
+    sh installBase.sh
     ;;
   *)
     exit
@@ -18,7 +17,7 @@ esac
 read -sp "continue? [Y/N]: " answer
 case $answer in
   [Yy])
-    bash kernel.sh
+    sh kernel.sh
     ;;
   *)
     exit
@@ -28,7 +27,7 @@ esac
 read -sp "continue? [Y/N]: " answer
 case $answer in
   [Yy])
-    bash sysconfig.sh
+    sh sysconfig.sh
     ;;
   *)
     exit

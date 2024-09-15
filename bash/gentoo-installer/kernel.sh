@@ -1,5 +1,5 @@
-#installerDir=/gentoo-installer
-#kernel=sys-kernel/vanilla-sources
+[ -z "$installerDir" ] && installerDir=/gentoo-installer
+[ -z "$kernel" ] && kernel=sys-kernel/vanilla-sources
 
 echo "sys-kernel/linux-firmware linux-fw-redistributable" >> /etc/portage/package.license
 emerge sys-kernel/linux-firmware

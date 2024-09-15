@@ -1,0 +1,6 @@
+don't forget to backup the following directories here:
+$HOME/.config/
+|_tofi
+|_hypr
+|_waybar
+|_foot

@@ -14,15 +14,17 @@ emerge dev-lisp/sbcl
 emerge dev-lisp/asdf
 
 #python
-dev-python/pip
+emerge dev-python/pip
 
+#java
+emerge virtual/jdk virtual/jre
 
 #lem
 su -l $user
 
 curl -L https://qlot.tech/installer | bash
 echo 'export PATH=$HOME/.qlot/bin:$PATH"' >> $HOME/.bashrc
-mkdir $HOME/common-lisp && cd $HOME/common-lisp
+#mkdir $HOME/common-lisp && cd $HOME/common-lisp
 
 git clone https://github.com/lem-project/lem.git .lem
 cd .lem && make ncurses
