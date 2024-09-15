@@ -1,2 +1,2 @@
-fix unstable rendering of ball
 render player scores (5x3 numbers)
+process user input

@@ -4,6 +4,7 @@
 #define HEIGHT 50
 #define PADDLES 2
 #define BALL_SPEED 0.5
+#define PLAYER_SPEED 0.5
 
 typedef struct {
   float x, y;
@@ -22,6 +23,7 @@ typedef struct {
 } Paddle;
 
 typedef struct {
+  int window[HEIGHT][WIDTH];
   Ball ball;
   Paddle paddles[2];
 } GameState;

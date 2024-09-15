@@ -6,18 +6,25 @@
 void render(GameState *game) {
   Ball *ball = &game->ball;
   Paddle *paddles = game->paddles;
+  
+  renderClear(game->window);
+  renderBall(ball, game->window);
+  renderPaddles(paddles, game->window);
 
-  clearScreen();
-  renderBall(ball);
-  renderPaddles(paddles);
-  renderBorders();
+  for (int y=0; y<HEIGHT; y++) {
+    for (int x=0; x<WIDTH; x++)
+     game->window[y][x] ? printf("#") : printf(" ");
+    printf("\n");
+  }
 }
 
-void renderBall(Ball *ball) {
-  drawChar((int)ball->pos.x, (int)ball->pos.y);
+void renderBall(Ball *ball, int window[][WIDTH]) {
+  int x = (int)ball->pos.x;
+  int y = (int)ball->pos.y;
+  window[y][x] = 1;
 }
 
-void renderPaddles(Paddle *paddles) {
+void renderPaddles(Paddle *paddles, int window[][WIDTH]) {
   for (int i=0; i<PADDLES; i++) {
     int h = paddles[i].size.y;
 
@@ -25,24 +32,16 @@ void renderPaddles(Paddle *paddles) {
       int x = paddles[i].pos.x;
       int y = paddles[i].pos.y + j;
 
-      drawChar(x, y);
+      window[y][x] = 1;
     }
   }
 }
 
-void renderBorders(void) {
-  for (int y=0; y<HEIGHT; y++) {
-    int x=0;
-    switch (y) {
-      case 0:
-        for (; x<WIDTH-1; x++)
-          drawChar(x, y);
-      case HEIGHT-1:
-        for (; x<WIDTH; x++)
-          drawChar(x, y);
-      default:
-        for (; x<=WIDTH-1; x+= WIDTH/2)
-          drawChar(x, y);
-    }
-  }
+void renderClear(int window[][WIDTH]) {
+  clearScreen();
+  for (int y=1; y<HEIGHT-1; y++)
+    for (int x=1; x<WIDTH-1; x++) 
+      if (x != (int)WIDTH/2)
+        window[y][x] = 0;
 }
+

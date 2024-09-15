@@ -20,8 +20,8 @@ void movePaddle(Ball *ball, Paddle *paddle) {
   
   if (middle < ball->pos.y &&
       paddle->pos.y+paddle->size.y < HEIGHT-1)
-    paddle->pos.y++;
+    paddle->pos.y += PLAYER_SPEED;
   else if (middle > ball->pos.y &&
       paddle->pos.y > 2) 
-    paddle->pos.y--;
+    paddle->pos.y -= PLAYER_SPEED;
 }
