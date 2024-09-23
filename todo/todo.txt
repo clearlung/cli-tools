@@ -1,0 +1,1 @@
+all functions other than copy() should read from the textArray and not filepointer directly

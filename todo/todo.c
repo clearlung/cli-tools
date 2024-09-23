@@ -1,6 +1,3 @@
-//this program doesn't work anymore? 
-//todo -a does nothing
-//todo -r does "free(): double free detected in tcache 2\nAborted" i think this is because I close fptr twice?
 #include <stdio.h>
 #include <stdlib.h>
 #include <getopt.h>
@@ -22,12 +19,6 @@ int main(int argc, char **argv) {
   int lineNumber;
   char fileContents[MAX];    
   int searchTermLength;
-  
-  fptr = fopen(path, "r");
-  if (fptr == NULL) {
-    printf("Text file not specified\n");
-    return 1;
-  }
 
   while (optionVal = getopt(argc, argv, "ar")) {
   	switch(optionVal) {
@@ -80,9 +71,15 @@ void returnTask(char *array) {
   }
 }
 
-void copy(FILE *fptr, char *array) { //copy file content to array
+void copy(FILE *fptr, char *array) { 
   int i, c;
   i=0;
+
+  fptr = fopen(path, "r");
+  if (fptr == NULL) {
+    printf("?\n");
+    exit(1);
+  }
 
   while ((c = fgetc(fptr)) != EOF)
     array[i++] = c;
@@ -92,7 +89,7 @@ void copy(FILE *fptr, char *array) { //copy file content to array
 }
 
 
-int indexLine(char *searchTerm, int searchTermLength, char *array) { //returns lineNumber of string
+int indexLine(char *searchTerm, int searchTermLength, char *array) {
   int offset, lineNumber, i;
   i = 0; lineNumber = 1;
 
@@ -113,12 +110,18 @@ int indexLine(char *searchTerm, int searchTermLength, char *array) { //returns l
   return -1;
 }
 
-void deleteLine(FILE *fptr1, int lineNumber) { //deletes line from file
+void deleteLine(FILE *fptr1, int lineNumber) {
   FILE *fptr2;
   int c, counter;
   counter = 1;
-  fptr2 = fopen("todo.new", "w");
-  
+
+  fptr1 = fopen(path, "r");
+  if (fptr1 == NULL) {
+    puts("?");
+    exit(1);
+  }
+
+  fptr2 = fopen("todo.new", "w"); 
   if (fptr2 == NULL) {
     printf("Could not create file.\n");
     exit(1);
@@ -143,6 +146,11 @@ void read(FILE *fptr) {
   char array;
   int c;
   
+  fptr = fopen(path, "r");
+  if (fptr == NULL) {
+    puts("?");
+    exit(1);
+  }
   while ((c = getc(fptr)) != EOF)
     putchar(c);
   fclose(fptr);
@@ -150,6 +158,12 @@ void read(FILE *fptr) {
 
 void appendLine(FILE *fptr, char *task, int mode) {
   char newLine = '\n';
+
+  fptr = fopen(path, "a");
+  if (fptr == NULL) {
+    puts("?");
+    exit(1);
+  }
 
   switch (mode) {
     case 1:
